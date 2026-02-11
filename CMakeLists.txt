@@ -65,7 +65,7 @@ if(APPLE)
     # Only apply universal build for macOS, not iOS
     if(QGC_MACOS_UNIVERSAL_BUILD AND NOT CMAKE_OSX_SYSROOT MATCHES "iphone")
         # Universal binary for both Intel and Apple Silicon (macOS only)
-        set(CMAKE_OSX_ARCHITECTURES "x86_64h;arm64")
+        set(CMAKE_OSX_ARCHITECTURES "arm64")
     endif()
 endif()
 
