@@ -187,7 +187,10 @@ set(QGC_QT_COMPONENTS
 )
 
 if(NOT IOS)
-    list(APPEND QGC_QT_COMPONENTS LinguistTools)
+    list(APPEND QGC_QT_COMPONENTS
+        LinguistTools
+        StateMachine
+    )
 endif()
 
 find_package(Qt6
