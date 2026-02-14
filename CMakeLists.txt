@@ -143,10 +143,9 @@ set(CMAKE_POLICY_DEFAULT_CMP0141 NEW)
 cmake_policy(SET CMP0075 NEW)
 set(CMAKE_POLICY_DEFAULT_CMP0075 NEW)
 
-# ============================================================================
+# ----------------------------------------------------------------------------
 # Qt6 Configuration
-# ============================================================================
-
+# ----------------------------------------------------------------------------
 set(QT_NO_PRIVATE_MODULE_WARNING ON)
 
 find_package(Qt6 ${QGC_QT_MINIMUM_VERSION} QUIET COMPONENTS Core)
@@ -160,35 +159,41 @@ if(NOT Qt6_FOUND)
     )
 endif()
 
+set(QGC_QT_COMPONENTS
+    Charts
+    Concurrent
+    Core
+    Core5Compat
+    Gui
+    HttpServer
+    Location
+    LocationPrivate
+    Multimedia
+    Network
+    Positioning
+    Qml
+    QmlIntegration
+    Quick
+    QuickControls2
+    QuickWidgets
+    Sensors
+    Sql
+    Svg
+    TextToSpeech
+    Widgets
+    Xml
+    Quick3D
+    StateMachine
+)
+
+if(NOT IOS)
+    list(APPEND QGC_QT_COMPONENTS LinguistTools)
+endif()
+
 find_package(Qt6
     ${QGC_QT_MINIMUM_VERSION}...${QGC_QT_MAXIMUM_VERSION}
     REQUIRED
-    COMPONENTS
-        Charts
-        Concurrent
-        Core
-        Core5Compat
-        Gui
-        HttpServer
-        LinguistTools
-        Location
-        LocationPrivate
-        Multimedia
-        Network
-        Positioning
-        Qml
-        QmlIntegration
-        Quick
-        QuickControls2
-        QuickWidgets
-        Sensors
-        Sql
-        Svg
-        TextToSpeech
-        Widgets
-        Xml
-        Quick3D
-        StateMachine
+    COMPONENTS ${QGC_QT_COMPONENTS}
     OPTIONAL_COMPONENTS
         Bluetooth
         MultimediaQuickPrivate
@@ -197,6 +202,12 @@ find_package(Qt6
         SerialPort
         Test
 )
+
+if(IOS)
+    find_package(Qt6LinguistTools REQUIRED
+        PATHS "${QT_HOST_PATH}/lib/cmake"
+    )
+endif()
 
 if(LINUX)
     find_package(Qt6 ${QGC_QT_MINIMUM_VERSION}...${QGC_QT_MAXIMUM_VERSION} COMPONENTS WaylandClient)
