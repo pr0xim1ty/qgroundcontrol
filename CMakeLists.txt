@@ -62,7 +62,7 @@ endif()
 if(APPLE)
     set(CMAKE_OSX_DEPLOYMENT_TARGET "${QGC_CONFIG_MACOS_DEPLOYMENT_TARGET}" CACHE STRING "macOS minimum deployment target")
     # iOS builds: set(CMAKE_OSX_SYSROOT "iphoneos")
-    if(QGC_MACOS_UNIVERSAL_BUILD)
+    if(QGC_MACOS_UNIVERSAL_BUILD AND NOT IOS)
         # Universal binary for both Intel and Apple Silicon
         set(CMAKE_OSX_ARCHITECTURES "x86_64h;arm64")
     endif()
