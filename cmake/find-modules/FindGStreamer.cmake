@@ -235,18 +235,18 @@ elseif(MACOS)
     )
 
 # ----------------------------------------------------------------------------
-# iOS Platform (Currently Unsupported)
+# iOS Platform
 # ----------------------------------------------------------------------------
 elseif(IOS)
-    CPMAddPackage(
-        NAME gstreamer
-        VERSION ${GStreamer_FIND_VERSION}
-        URL "https://gstreamer.freedesktop.org/data/pkg/ios/${GStreamer_FIND_VERSION}/gstreamer-1.0-devel-${GStreamer_FIND_VERSION}-ios-universal.pkg"
-    )
-
-    set(GST_PKG_FILE "${gstreamer_SOURCE_DIR}/gstreamer.pkg")
-    set(GST_EXPAND_DIR "${gstreamer_SOURCE_DIR}/gstreamer-pkg-expanded")
+    set(GST_PKG_FILE "${CMAKE_BINARY_DIR}/gstreamer-1.0-devel-${GStreamer_FIND_VERSION}-ios-universal.pkg")
+    set(GST_EXPAND_DIR "${CMAKE_BINARY_DIR}/gstreamer-pkg-expanded")
     set(GST_PAYLOAD_DIR "${GST_EXPAND_DIR}/Payload")
+
+    file(DOWNLOAD
+        "https://gstreamer.freedesktop.org/data/pkg/ios/${GStreamer_FIND_VERSION}/gstreamer-1.0-devel-${GStreamer_FIND_VERSION}-ios-universal.pkg"
+        "${GST_PKG_FILE}"
+        SHOW_PROGRESS
+    )
 
     file(MAKE_DIRECTORY "${GST_EXPAND_DIR}")
     execute_process(
@@ -266,9 +266,7 @@ elseif(IOS)
         message(FATAL_ERROR "xar failed to extract GStreamer Payload")
     endif()
 
-    # set(GSTREAMER_FRAMEWORK_PATH "/Library/Developer/GStreamer/iPhone.sdk" CACHE PATH "Path of GStreamer.Framework")
     set(GSTREAMER_FRAMEWORK_PATH "${GST_PAYLOAD_DIR}/usr/local/Frameworks/GStreamer.framework")
-
     set(GStreamer_ROOT_DIR "${GSTREAMER_FRAMEWORK_PATH}/Versions/1.0")
 
     if(NOT EXISTS "${GStreamer_ROOT_DIR}")
