@@ -78,7 +78,7 @@ runs:
         QT_VERSION=$(jq -r '.qt_version' "$CONFIG_FILE")
         QT_MIN_VERSION=$(jq -r '.qt_minimum_version' "$CONFIG_FILE")
         QT_MODULES=$(jq -r '.qt_modules' "$CONFIG_FILE")
-        QT_MODULES_IOS=$(echo "$QT_MODULES" | sed 's/qtserialport//g; s/qtscxml//g; s/  */ /g; s/^ *//; s/ *$//')
+        QT_MODULES_IOS=$(echo "$QT_MODULES" | sed 's/qtserialport//g; s/qtscxml//g; s/qttools//g; s/  */ /g; s/^ *//; s/ *$//')
         GST_MIN_VERSION=$(jq -r '.gstreamer_minimum_version' "$CONFIG_FILE")
         GST_MACOS_VERSION=$(jq -r '.gstreamer_macos_version' "$CONFIG_FILE")
         GST_ANDROID_VERSION=$(jq -r '.gstreamer_android_version' "$CONFIG_FILE")
