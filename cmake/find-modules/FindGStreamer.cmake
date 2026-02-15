@@ -242,30 +242,37 @@ elseif(IOS)
     set(GST_EXPAND_DIR "${CMAKE_BINARY_DIR}/gstreamer-pkg-expanded")
     set(GST_PAYLOAD_DIR "${GST_EXPAND_DIR}/Payload")
 
+    # Clean up any previous downloads and extractions
+    file(REMOVE_RECURSE "${GST_EXPAND_DIR}")
+    file(REMOVE "${GST_PKG_FILE}")
+
     file(DOWNLOAD
         "https://gstreamer.freedesktop.org/data/pkg/ios/${GStreamer_FIND_VERSION}/gstreamer-1.0-devel-${GStreamer_FIND_VERSION}-ios-universal.pkg"
         "${GST_PKG_FILE}"
         SHOW_PROGRESS
     )
 
-    # Clean extraction directory to avoid "File exists" errors
-    file(REMOVE_RECURSE "${GST_EXPAND_DIR}")
+    # Create fresh extraction directory
     file(MAKE_DIRECTORY "${GST_EXPAND_DIR}")
     execute_process(
         COMMAND pkgutil --expand-full "${GST_PKG_FILE}" "${GST_EXPAND_DIR}"
         RESULT_VARIABLE _pkgutil_rc
+        OUTPUT_VARIABLE _pkgutil_out
+        ERROR_VARIABLE _pkgutil_err
     )
     if(NOT _pkgutil_rc EQUAL 0)
-        message(FATAL_ERROR "pkgutil failed to expand GStreamer .pkg")
+        message(FATAL_ERROR "pkgutil failed to expand GStreamer .pkg\n  Return code: ${_pkgutil_rc}\n  Output: ${_pkgutil_out}\n  Error: ${_pkgutil_err}")
     endif()
 
     execute_process(
         COMMAND xar -xf "${GST_EXPAND_DIR}/gstreamer-1.0-devel-${GStreamer_FIND_VERSION}-ios-universal.pkg/Payload"
                 --directory "${GST_PAYLOAD_DIR}"
         RESULT_VARIABLE _xar_rc
+        OUTPUT_VARIABLE _xar_out
+        ERROR_VARIABLE _xar_err
     )
     if(NOT _xar_rc EQUAL 0)
-        message(FATAL_ERROR "xar failed to extract GStreamer Payload")
+        message(FATAL_ERROR "xar failed to extract GStreamer Payload\n  Return code: ${_xar_rc}\n  Output: ${_xar_out}\n  Error: ${_xar_err}")
     endif()
 
     set(GSTREAMER_FRAMEWORK_PATH "${GST_PAYLOAD_DIR}/usr/local/Frameworks/GStreamer.framework")
