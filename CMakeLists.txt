@@ -210,12 +210,6 @@ find_package(Qt6
         Test
 )
 
-if(IOS)
-    find_package(Qt6LinguistTools REQUIRED
-        PATHS "${QT_HOST_PATH}/lib/cmake"
-    )
-endif()
-
 if(LINUX)
     find_package(Qt6 ${QGC_QT_MINIMUM_VERSION}...${QGC_QT_MAXIMUM_VERSION} COMPONENTS WaylandClient)
 endif()
