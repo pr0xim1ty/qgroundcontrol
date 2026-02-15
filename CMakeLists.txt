@@ -207,7 +207,6 @@ find_package(Qt6
         MultimediaQuickPrivate
         OpenGL
         QuickTest
-        SerialPort
         Test
 )
 
