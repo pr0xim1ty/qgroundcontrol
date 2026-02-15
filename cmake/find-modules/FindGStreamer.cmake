@@ -242,28 +242,43 @@ elseif(IOS)
     set(GST_EXPAND_DIR "${CMAKE_BINARY_DIR}/gstreamer-pkg-expanded")
     set(GST_PAYLOAD_DIR "${GST_EXPAND_DIR}/Payload")
 
+    # Clean up any previous downloads and extractions
+    file(REMOVE_RECURSE "${GST_EXPAND_DIR}")
+    file(REMOVE "${GST_PKG_FILE}")
+
     file(DOWNLOAD
         "https://gstreamer.freedesktop.org/data/pkg/ios/${GStreamer_FIND_VERSION}/gstreamer-1.0-devel-${GStreamer_FIND_VERSION}-ios-universal.pkg"
         "${GST_PKG_FILE}"
         SHOW_PROGRESS
+        STATUS _download_status
     )
+    list(GET _download_status 0 _download_rc)
+    if(NOT _download_rc EQUAL 0)
+        list(GET _download_status 1 _download_msg)
+        message(FATAL_ERROR "Failed to download GStreamer iOS package\n  URL: https://gstreamer.freedesktop.org/data/pkg/ios/${GStreamer_FIND_VERSION}/\n  Error: ${_download_msg}")
+    endif()
 
+    # Create fresh extraction directory
     file(MAKE_DIRECTORY "${GST_EXPAND_DIR}")
     execute_process(
         COMMAND pkgutil --expand-full "${GST_PKG_FILE}" "${GST_EXPAND_DIR}"
         RESULT_VARIABLE _pkgutil_rc
+        OUTPUT_VARIABLE _pkgutil_output
+        ERROR_VARIABLE _pkgutil_error
     )
     if(NOT _pkgutil_rc EQUAL 0)
-        message(FATAL_ERROR "pkgutil failed to expand GStreamer .pkg")
+        message(FATAL_ERROR "pkgutil failed to expand GStreamer .pkg\n  Return code: ${_pkgutil_rc}\n  Output: ${_pkgutil_output}\n  Error: ${_pkgutil_error}")
     endif()
 
     execute_process(
         COMMAND xar -xf "${GST_EXPAND_DIR}/gstreamer-1.0-devel-${GStreamer_FIND_VERSION}-ios-universal.pkg/Payload"
                 --directory "${GST_PAYLOAD_DIR}"
         RESULT_VARIABLE _xar_rc
+        OUTPUT_VARIABLE _xar_output
+        ERROR_VARIABLE _xar_error
     )
     if(NOT _xar_rc EQUAL 0)
-        message(FATAL_ERROR "xar failed to extract GStreamer Payload")
+        message(FATAL_ERROR "xar failed to extract GStreamer Payload\n  Return code: ${_xar_rc}\n  Output: ${_xar_output}\n  Error: ${_xar_error}")
     endif()
 
     set(GSTREAMER_FRAMEWORK_PATH "${GST_PAYLOAD_DIR}/usr/local/Frameworks/GStreamer.framework")
@@ -274,6 +289,8 @@ elseif(IOS)
     endif()
 
     set(GSTREAMER_INCLUDE_PATH "${GSTREAMER_FRAMEWORK_PATH}/Headers")
+    set(GSTREAMER_LIB_PATH "${GStreamer_ROOT_DIR}/lib")
+    set(GSTREAMER_PLUGIN_PATH "${GSTREAMER_LIB_PATH}/gstreamer-1.0")
 endif()
 
 # ----------------------------------------------------------------------------
