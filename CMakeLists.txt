@@ -183,7 +183,6 @@ set(QGC_QT_COMPONENTS
     Widgets
     Xml
     Quick3D
-    StateMachine
 )
 
 if(NOT IOS)
