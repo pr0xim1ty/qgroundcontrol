@@ -238,8 +238,6 @@ elseif(MACOS)
 # iOS Platform (Currently Unsupported)
 # ----------------------------------------------------------------------------
 elseif(IOS)
-    message(FATAL_ERROR "GStreamer for iOS is currently unsupported")
-
     CPMAddPackage(
         NAME gstreamer
         VERSION ${GStreamer_FIND_VERSION}
