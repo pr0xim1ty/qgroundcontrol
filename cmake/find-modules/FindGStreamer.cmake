@@ -248,6 +248,8 @@ elseif(IOS)
         SHOW_PROGRESS
     )
 
+    # Clean extraction directory to avoid "File exists" errors
+    file(REMOVE_RECURSE "${GST_EXPAND_DIR}")
     file(MAKE_DIRECTORY "${GST_EXPAND_DIR}")
     execute_process(
         COMMAND pkgutil --expand-full "${GST_PKG_FILE}" "${GST_EXPAND_DIR}"
@@ -274,6 +276,8 @@ elseif(IOS)
     endif()
 
     set(GSTREAMER_INCLUDE_PATH "${GSTREAMER_FRAMEWORK_PATH}/Headers")
+    set(GSTREAMER_LIB_PATH "${GStreamer_ROOT_DIR}/lib")
+    set(GSTREAMER_PLUGIN_PATH "${GSTREAMER_LIB_PATH}/gstreamer-1.0")
 endif()
 
 # ----------------------------------------------------------------------------
